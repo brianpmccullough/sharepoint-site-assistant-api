@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { passportJwtSecret } from 'jwks-rsa';
-import { Request } from 'express';
-import { ConfigurationService } from '../../config/configuration.service';
-import { AuthenticatedUser } from '../model/authenticated-user.model';
+import { Injectable } from "@nestjs/common";
+import { PassportStrategy } from "@nestjs/passport";
+import { ExtractJwt, Strategy } from "passport-jwt";
+import { passportJwtSecret } from "jwks-rsa";
+import { Request } from "express";
+import { ConfigurationService } from "../../config/configuration.service";
+import { AuthenticatedUser } from "../models/authenticated-user.model";
 
 interface AadTokenPayload {
   oid: string;
@@ -16,7 +16,7 @@ interface AadTokenPayload {
 @Injectable()
 export class AzureAdJwtStrategy extends PassportStrategy(
   Strategy,
-  'azure-ad-jwt',
+  "azure-ad-jwt",
 ) {
   constructor(configurationService: ConfigurationService) {
     const { tenantId, clientId } = configurationService.azure;
@@ -31,18 +31,18 @@ export class AzureAdJwtStrategy extends PassportStrategy(
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       audience: [`api://${clientId}`, clientId],
       issuer: `https://sts.windows.net/${tenantId}/`,
-      algorithms: ['RS256'],
+      algorithms: ["RS256"],
       passReqToCallback: true,
     });
   }
 
   validate(request: Request, payload: AadTokenPayload): AuthenticatedUser {
-    const authHeader = request.headers['authorization'] ?? '';
-    const accessToken = authHeader.replace(/^Bearer\s+/i, '');
+    const authHeader = request.headers["authorization"] ?? "";
+    const accessToken = authHeader.replace(/^Bearer\s+/i, "");
     return {
       objectId: payload.oid,
-      email: payload.preferred_username ?? payload.upn ?? '',
-      displayName: payload.name ?? '',
+      email: payload.preferred_username ?? payload.upn ?? "",
+      displayName: payload.name ?? "",
       accessToken,
     };
   }
