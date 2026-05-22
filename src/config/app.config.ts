@@ -1,5 +1,11 @@
 import { plainToInstance } from "class-transformer";
-import { IsInt, IsString, Min, validateSync } from "class-validator";
+import {
+  IsInt,
+  IsOptional,
+  IsString,
+  Min,
+  validateSync,
+} from "class-validator";
 
 class EnvironmentVariables {
   @IsInt()
@@ -17,6 +23,13 @@ class EnvironmentVariables {
 
   @IsString()
   TENANT_NAME: string = "";
+
+  @IsString()
+  OPENAI_API_KEY: string = "";
+
+  @IsOptional()
+  @IsString()
+  OPENAI_MODEL?: string;
 }
 
 export function validateConfig(
@@ -40,4 +53,8 @@ export const appConfig = () => ({
     clientSecret: process.env.AZURE_CLIENT_SECRET ?? "",
   },
   tenantName: process.env.TENANT_NAME ?? "",
+  openai: {
+    apiKey: process.env.OPENAI_API_KEY ?? "",
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
+  },
 });
