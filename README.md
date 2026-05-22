@@ -9,6 +9,8 @@ A NestJS API backend for an SPFx-based SharePoint site assistant. Includes Micro
    - `AZURE_CLIENT_ID` — app registration client ID
    - `AZURE_CLIENT_SECRET` — app registration client secret (store in a vault in production)
    - `TENANT_NAME` — your tenant short name (e.g. `myco`)
+   - `OPENAI_API_KEY` — OpenAI API key (store in a vault in production)
+   - `OPENAI_MODEL` — *(optional)* model name, defaults to `gpt-4o-mini`
 2. `npm install`
 3. `npm run start:dev`
 4. Swagger UI available at `http://localhost:<PORT>/api`

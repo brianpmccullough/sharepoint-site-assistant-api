@@ -10,6 +10,10 @@ export class ConfigurationService {
     readonly clientSecret: string;
   };
   readonly tenantName: string;
+  readonly openai: {
+    readonly apiKey: string;
+    readonly model: string;
+  };
 
   constructor(configService: ConfigService) {
     this.port = configService.get<number>("port") ?? 3000;
@@ -19,5 +23,9 @@ export class ConfigurationService {
       clientSecret: configService.get<string>("azure.clientSecret") ?? "",
     };
     this.tenantName = configService.get<string>("tenantName") ?? "";
+    this.openai = {
+      apiKey: configService.get<string>("openai.apiKey")!,
+      model: configService.get<string>("openai.model")!,
+    };
   }
 }

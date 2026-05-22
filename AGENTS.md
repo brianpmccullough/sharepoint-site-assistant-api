@@ -27,8 +27,9 @@ src/
     strategies/   # AzureAdJwtStrategy — JWKS validation via Passport
     microsoft-authentication.service.ts  # OBO token exchange (user → Graph-scoped token)
   site-assistant/      # SiteAssistantModule — POST .../assistant/chat and .../assistant/prompts; routes use Graph API colon-notation site paths
-    models/            # SharePointSite — parsed site identity
+    models/            # SharePointSite, ChatRequest — site identity and request shapes
     pipes/             # ParseSiteUrlPipe — extracts site host + path from the wildcard route segment
+    tools/             # OpenAI agent tool definitions (*.tool.ts)
   health/
     health.module.ts
     health.controller.ts  # GET /health via @nestjs/terminus
@@ -47,7 +48,7 @@ Each feature lives in its own module folder: `module.ts`, `controller.ts`, `serv
 - **Swagger decorators on all controllers.** Use `@ApiTags`, `@ApiOperation`, and `@ApiBearerAuth` on every controller and endpoint. The Swagger doc is the API contract.
 - **No barrel/index files.** Import directly from the source file.
 - **No comments explaining what code does.** Only add a comment if the *why* is non-obvious (a constraint, workaround, or subtle invariant).
-- **File Naming:** controllers are `*.controller.ts`, services are `*.service.ts`, modules are `*.module.ts`, models are `*.model.ts`, guards are `*.guard.ts`.  If not specified here, follow typical NestJS and TypeScript conventions.
+- **File Naming:** controllers are `*.controller.ts`, services are `*.service.ts`, modules are `*.module.ts`, models are `*.model.ts`, guards are `*.guard.ts`.  If not specified here, follow typical NestJS and TypeScript conventions. **No `dto/` folders and no `*.dto.ts` files** — request/response shapes are models and live in `models/`.
 - **Variable Naming:** avoid abbreviations, unless very commonly abbreviated (e.g. Api, Http, Aad).  Avoid vague naming such as obj or single letters (unless a very quick iterator). Good: MicrosoftGraphSearchService | Bad: MsftGraphSearchSvc
 - **Function Naming:** avoid abbreviations, unless very commmonly abbreviated (e.g. Api, Http, Aad).  The function should be self-documenting in it's name.
 
@@ -91,11 +92,13 @@ Local dev requires a `.env` file. Copy `.env.example` and fill in Azure credenti
 
 **Environment variables:** whenever a new env var is added or removed, update both `.env.example` and the `README.md` Authentication table to match. These three must always be in sync: `src/config/app.config.ts` (schema), `.env.example` (template), `README.md` (documentation).
 
+**Config defaults belong in `appConfig()` only.** The `EnvironmentVariables` class exists to validate types and mark required vs. optional fields — it must not set default values. `ConfigurationService` reads from the NestJS config store without fallback `?? value` expressions; it trusts `appConfig()` has already applied defaults. Repeating a default in two or three of these layers is an antipattern — if the default ever changes, it must be updated everywhere.
+
 ---
 
 ## Open Issues
 
-When a decision is skipped, deferred, or needs follow-up, add a row to `docs/build/open-issues.md` with the date (`yyyy-mm-dd`) and a clear description of what needs to be revisited. Do not remove resolved entries — update their status to `Resolved` instead.
+When a decision is skipped, deferred, or needs follow-up, add a row to `docs/open-issues.md` with the date (`yyyy-mm-dd`) and a clear description of what needs to be revisited. Do not remove resolved entries — update their status to `Resolved` instead.
 
 ---
 
