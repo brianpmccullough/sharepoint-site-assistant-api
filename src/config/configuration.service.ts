@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class ConfigurationService {
@@ -12,12 +12,12 @@ export class ConfigurationService {
   readonly tenantName: string;
 
   constructor(configService: ConfigService) {
-    this.port = configService.get<number>('port') ?? 3000;
+    this.port = configService.get<number>("port") ?? 3000;
     this.azure = {
-      tenantId: configService.get<string>('azure.tenantId') ?? '',
-      clientId: configService.get<string>('azure.clientId') ?? '',
-      clientSecret: configService.get<string>('azure.clientSecret') ?? '',
+      tenantId: configService.get<string>("azure.tenantId") ?? "",
+      clientId: configService.get<string>("azure.clientId") ?? "",
+      clientSecret: configService.get<string>("azure.clientSecret") ?? "",
     };
-    this.tenantName = configService.get<string>('tenantName') ?? '';
+    this.tenantName = configService.get<string>("tenantName") ?? "";
   }
 }

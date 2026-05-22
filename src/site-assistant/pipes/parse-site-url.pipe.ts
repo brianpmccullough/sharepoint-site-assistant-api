@@ -1,5 +1,5 @@
-import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
-import { SharePointSite } from '../models/sharepoint-site.model';
+import { BadRequestException, Injectable, PipeTransform } from "@nestjs/common";
+import { SharePointSite } from "../models/sharepoint-site.model";
 
 // Parses the Graph API colon-notation site path segment from the URL.
 // Format: {hostname}:{server-relative-path}: (trailing colon closes path mode)
@@ -9,9 +9,9 @@ import { SharePointSite } from '../models/sharepoint-site.model';
 @Injectable()
 export class ParseSiteUrlPipe implements PipeTransform<string, SharePointSite> {
   transform(value: string | string[]): SharePointSite {
-    const raw = Array.isArray(value) ? value.join('/') : value;
-    const normalized = raw.endsWith(':') ? raw.slice(0, -1) : raw;
-    const colonIndex = normalized.indexOf(':');
+    const raw = Array.isArray(value) ? value.join("/") : value;
+    const normalized = raw.endsWith(":") ? raw.slice(0, -1) : raw;
+    const colonIndex = normalized.indexOf(":");
 
     if (colonIndex === -1) {
       throw new BadRequestException(`Invalid site path: ${raw}`);

@@ -1,13 +1,13 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import {
   AuthError,
   ConfidentialClientApplication,
   Configuration,
   OnBehalfOfRequest,
-} from '@azure/msal-node';
-import { ConfigurationService } from '../config/configuration.service';
+} from "@azure/msal-node";
+import { ConfigurationService } from "../config/configuration.service";
 
-const GRAPH_SCOPE = 'https://graph.microsoft.com/.default';
+const GRAPH_SCOPE = "https://graph.microsoft.com/.default";
 
 @Injectable()
 export class MicrosoftAuthenticationService {
@@ -34,7 +34,7 @@ export class MicrosoftAuthenticationService {
       const result = await this.msalClient.acquireTokenOnBehalfOf(oboRequest);
       if (!result?.accessToken) {
         throw new UnauthorizedException(
-          'OBO token exchange returned no access token',
+          "OBO token exchange returned no access token",
         );
       }
       return result.accessToken;
@@ -43,7 +43,7 @@ export class MicrosoftAuthenticationService {
         throw error;
       }
       if (error instanceof AuthError) {
-        throw new UnauthorizedException('Token exchange failed');
+        throw new UnauthorizedException("Token exchange failed");
       }
       throw error;
     }

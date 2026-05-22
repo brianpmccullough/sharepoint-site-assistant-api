@@ -1,5 +1,5 @@
-import { plainToInstance } from 'class-transformer';
-import { IsInt, IsString, Min, validateSync } from 'class-validator';
+import { plainToInstance } from "class-transformer";
+import { IsInt, IsString, Min, validateSync } from "class-validator";
 
 class EnvironmentVariables {
   @IsInt()
@@ -7,16 +7,16 @@ class EnvironmentVariables {
   PORT: number = 3000;
 
   @IsString()
-  AZURE_TENANT_ID: string = '';
+  AZURE_TENANT_ID: string = "";
 
   @IsString()
-  AZURE_CLIENT_ID: string = '';
+  AZURE_CLIENT_ID: string = "";
 
   @IsString()
-  AZURE_CLIENT_SECRET: string = '';
+  AZURE_CLIENT_SECRET: string = "";
 
   @IsString()
-  TENANT_NAME: string = '';
+  TENANT_NAME: string = "";
 }
 
 export function validateConfig(
@@ -33,11 +33,11 @@ export function validateConfig(
 }
 
 export const appConfig = () => ({
-  port: parseInt(process.env.PORT ?? '3000', 10),
+  port: parseInt(process.env.PORT ?? "3000", 10),
   azure: {
-    tenantId: process.env.AZURE_TENANT_ID ?? '',
-    clientId: process.env.AZURE_CLIENT_ID ?? '',
-    clientSecret: process.env.AZURE_CLIENT_SECRET ?? '',
+    tenantId: process.env.AZURE_TENANT_ID ?? "",
+    clientId: process.env.AZURE_CLIENT_ID ?? "",
+    clientSecret: process.env.AZURE_CLIENT_SECRET ?? "",
   },
-  tenantName: process.env.TENANT_NAME ?? '',
+  tenantName: process.env.TENANT_NAME ?? "",
 });

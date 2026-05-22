@@ -1,11 +1,11 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { AuthGuard } from '@nestjs/passport';
-import { Observable } from 'rxjs';
-import { NO_AUTHENTICATION_KEY } from '../decorators/no-authentication.decorator';
+import { ExecutionContext, Injectable } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { AuthGuard } from "@nestjs/passport";
+import { Observable } from "rxjs";
+import { NO_AUTHENTICATION_KEY } from "../decorators/no-authentication.decorator";
 
 @Injectable()
-export class JwtBearerGuard extends AuthGuard('azure-ad-jwt') {
+export class JwtBearerGuard extends AuthGuard("azure-ad-jwt") {
   constructor(private readonly reflector: Reflector) {
     super();
   }
