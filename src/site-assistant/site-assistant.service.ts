@@ -46,7 +46,8 @@ export class SiteAssistantService {
     });
 
     for await (const chunk of textStream) {
-      yield `event: delta\ndata: ${JSON.stringify({ text: chunk as string })}\n\n`;
+      const text = Buffer.isBuffer(chunk) ? chunk.toString("utf8") : String(chunk);
+      yield `event: delta\ndata: ${JSON.stringify({ text })}\n\n`;
     }
 
     await streamResult.completed;
