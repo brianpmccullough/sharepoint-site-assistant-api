@@ -8,7 +8,7 @@ import { ConfigurationService } from "./config/configuration.service";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const { tenantName } = app.get(ConfigurationService);
+  const { tenantName } = app.get(ConfigurationService).getConfiguration().azure;
   app.enableCors({
     origin: new RegExp(`^https://${tenantName}(-[^.]+)?\\.sharepoint\\.com$`),
   });

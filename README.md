@@ -4,16 +4,38 @@ A NestJS API backend for an SPFx-based SharePoint site assistant. Includes Micro
 
 ## Quick start
 
-1. Copy `.env.example` to `.env` and fill in the values:
-   - `AZURE_TENANT_ID` — your Entra ID tenant ID
-   - `AZURE_CLIENT_ID` — app registration client ID
-   - `AZURE_CLIENT_SECRET` — app registration client secret (store in a vault in production)
-   - `TENANT_NAME` — your tenant short name (e.g. `myco`)
-   - `OPENAI_API_KEY` — OpenAI API key (store in a vault in production)
-   - `OPENAI_MODEL` — *(optional)* model name, defaults to `gpt-4o-mini`
+1. Copy `.env.example` to `.env` and fill in the values.
 2. `npm install`
 3. `npm run start:dev`
 4. Swagger UI available at `http://localhost:<PORT>/api`
+
+### Core settings
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `AZURE_TENANT_ID` | Yes | Entra ID tenant ID |
+| `AZURE_CLIENT_ID` | Yes | App registration client ID |
+| `AZURE_CLIENT_SECRET` | Yes | App registration client secret (store in a vault) |
+| `TENANT_NAME` | Yes | Your tenant short name (e.g. `myco`) — used for CORS |
+| `AI_PROVIDER` | No | `openai` (default) or `azure` |
+
+### OpenAI provider (`AI_PROVIDER=openai`)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `OPENAI_API_KEY` | Yes | OpenAI API key (store in a vault) |
+| `OPENAI_MODEL` | No | Model name, defaults to `gpt-4o-mini` |
+
+### Azure AI provider (`AI_PROVIDER=azure`)
+
+Works with both Azure OpenAI Service and Azure AI Foundry model deployments.
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `AZURE_AI_ENDPOINT` | Yes | Azure resource endpoint URL |
+| `AZURE_AI_API_KEY` | Yes | Azure AI API key (store in a vault) |
+| `AZURE_AI_DEPLOYMENT` | Yes | Deployment name (used as the model identifier) |
+| `AZURE_AI_API_VERSION` | No | API version, defaults to `2025-01-01-preview` |
 
 ## Routes
 
