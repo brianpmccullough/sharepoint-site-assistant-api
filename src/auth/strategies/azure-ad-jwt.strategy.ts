@@ -19,7 +19,8 @@ export class AzureAdJwtStrategy extends PassportStrategy(
   "azure-ad-jwt",
 ) {
   constructor(configurationService: ConfigurationService) {
-    const { tenantId, clientId } = configurationService.azure;
+    const { tenantId, clientId } =
+      configurationService.getConfiguration().azure;
 
     super({
       secretOrKeyProvider: passportJwtSecret({

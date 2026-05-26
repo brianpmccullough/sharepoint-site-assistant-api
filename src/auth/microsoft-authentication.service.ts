@@ -14,11 +14,12 @@ export class MicrosoftAuthenticationService {
   private readonly msalClient: ConfidentialClientApplication;
 
   constructor(configurationService: ConfigurationService) {
+    const { azure } = configurationService.getConfiguration();
     const msalConfig: Configuration = {
       auth: {
-        clientId: configurationService.azure.clientId,
-        authority: `https://login.microsoftonline.com/${configurationService.azure.tenantId}`,
-        clientSecret: configurationService.azure.clientSecret,
+        clientId: azure.clientId,
+        authority: `https://login.microsoftonline.com/${azure.tenantId}`,
+        clientSecret: azure.clientSecret,
       },
     };
     this.msalClient = new ConfidentialClientApplication(msalConfig);

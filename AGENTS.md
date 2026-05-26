@@ -17,8 +17,9 @@ src/
   main.ts              # Bootstrap: CORS (SharePoint-origin regex), Swagger setup, global ValidationPipe, port binding
   app.module.ts        # Root module — imports ConfigModule, AuthModule, HealthModule, SiteAssistantModule
   config/
-    config.module.ts   # Wraps @nestjs/config; globally available, no need to import elsewhere
-    app.config.ts      # Typed env schema (class-validator) + config factory
+    config.module.ts        # Wraps @nestjs/config; globally available, no need to import elsewhere
+    configuration.service.ts  # Single source of truth: maps env vars to typed properties
+    models/                 # Shared config types (e.g. AiProvider)
   auth/
     auth.module.ts
     decorators/   # @NoAuthentication() opt-out decorator
@@ -27,6 +28,7 @@ src/
     strategies/   # AzureAdJwtStrategy — JWKS validation via Passport
     microsoft-authentication.service.ts  # OBO token exchange (user → Graph-scoped token)
   site-assistant/      # SiteAssistantModule — POST .../assistant/chat and .../assistant/prompts; routes use Graph API colon-notation site paths
+    factories/         # configureAiProvider — constructs and registers the AI client from AppConfiguration
     models/            # SharePointSite, ChatRequest — site identity and request shapes
     pipes/             # ParseSiteUrlPipe — extracts site host + path from the wildcard route segment
     tools/             # OpenAI agent tool definitions (*.tool.ts)
@@ -51,6 +53,8 @@ Each feature lives in its own module folder: `module.ts`, `controller.ts`, `serv
 - **File Naming:** controllers are `*.controller.ts`, services are `*.service.ts`, modules are `*.module.ts`, models are `*.model.ts`, guards are `*.guard.ts`.  If not specified here, follow typical NestJS and TypeScript conventions. **No `dto/` folders and no `*.dto.ts` files** — request/response shapes are models and live in `models/`.
 - **Variable Naming:** avoid abbreviations, unless very commonly abbreviated (e.g. Api, Http, Aad).  Avoid vague naming such as obj or single letters (unless a very quick iterator). Good: MicrosoftGraphSearchService | Bad: MsftGraphSearchSvc
 - **Function Naming:** avoid abbreviations, unless very commmonly abbreviated (e.g. Api, Http, Aad).  The function should be self-documenting in it's name.
+- **Use `const` objects over string discriminated unions.** Define sets of known string values as `const` objects with `as const` and a matching type alias, placed in `models/`. Example: `AiProvider` in `src/config/models/ai-provider.model.ts`. Always reference the constant values in code — never use bare string literals for values that belong to a defined set.
+- **Config validation belongs in `ConfigurationService`.** Startup errors and cross-field validation (e.g. "provider X requires field Y") go in the `ConfigurationService` constructor. Factories and services receive a fully-validated, typed config object and must not reference raw environment variable names.
 
 ---
 
@@ -90,9 +94,7 @@ npm run test:e2e
 
 Local dev requires a `.env` file. Copy `.env.example` and fill in Azure credentials.
 
-**Environment variables:** whenever a new env var is added or removed, update both `.env.example` and the `README.md` Authentication table to match. These three must always be in sync: `src/config/app.config.ts` (schema), `.env.example` (template), `README.md` (documentation).
-
-**Config defaults belong in `appConfig()` only.** The `EnvironmentVariables` class exists to validate types and mark required vs. optional fields — it must not set default values. `ConfigurationService` reads from the NestJS config store without fallback `?? value` expressions; it trusts `appConfig()` has already applied defaults. Repeating a default in two or three of these layers is an antipattern — if the default ever changes, it must be updated everywhere.
+**Environment variables:** `ConfigurationService` (`src/config/configuration.service.ts`) is the single place where environment variables are read and mapped to typed properties. It uses NestJS `ConfigService.getOrThrow<T>("ENV_VAR_NAME")` for required vars and `ConfigService.get<T>("ENV_VAR_NAME") ?? default` for optional ones. Whenever a new env var is added or removed, update both `.env.example` (template) and `README.md` (documentation) to match. `AI_PROVIDER` controls which provider block is active (`openai` | `azure`); provider-specific required vars are validated in the `ConfigurationService` constructor.
 
 ---
 
